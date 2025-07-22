@@ -1,11 +1,7 @@
 {
   "name": "server-backend",
   "version": "1.0.0",
-<<<<<<< HEAD
-  "main": "server.js",
-=======
   "main": "server.js", 
->>>>>>> f313dcd (Initial commit from VS Code terminal)
   "type": "module",
   "scripts": {
     "start": "node server.js",

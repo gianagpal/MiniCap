@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-const CareGroup = require('../Model/careGroup');
-const CareGroupMember = require('../Model/careGroupMember');
-
-// POST /caregroups
-exports.createCareGroup = async (req, res) => {
-  try {
-    const { groupName, groupDescription } = req.body;
-=======
 import CareGroup from '../Model/careGroup.js';
 import CareGroupMember from '../Model/careGroupMember.js';
 
@@ -15,11 +6,11 @@ const createCareGroup = async (req, res) => {
   try {
     const { groupName, groupDescription } = req.body;
 
->>>>>>> f313dcd (Initial commit from VS Code terminal)
     const group = await CareGroup.create({
       groupName,
       groupDescription,
-      createdBy: req.user._id
+      adminUser: req.user._id,
+      createdAt: new Date()
     });
 
     await CareGroupMember.create({
@@ -34,68 +25,62 @@ const createCareGroup = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-// POST /caregroups/:groupId/add-member
-exports.addMember = async (req, res) => {
-=======
-// POST /api/caregroups/:groupId/add-member
-const addMember = async (req, res) => {
->>>>>>> f313dcd (Initial commit from VS Code terminal)
+// PUT /api/caregroups/:groupId
+const editCareGroup = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const { userId, role } = req.body;
+    const { groupName, groupDescription } = req.body;
 
-    const member = await CareGroupMember.create({
-      careGroupId: groupId,
-      userId,
-      role
-    });
+    const group = await CareGroup.findById(groupId);
 
-    res.status(201).json({ message: 'Member added', member });
-<<<<<<< HEAD
+    if (!group) {
+      return res.status(404).json({ success: false, message: 'Care group not found' });
+    }
+
+    // Only allow adminUser to edit
+    if (group.adminUser.toString() !== req.user._id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized to edit this group' });
+    }
+
+    if (groupName) group.groupName = groupName;
+    if (groupDescription) group.groupDescription = groupDescription;
+
+    await group.save();
+
+    res.json({ success: true, message: 'Care group updated', group });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// GET /caregroups/:groupId/members
-exports.getMembers = async (req, res) => {
-  const members = await CareGroupMember.find({ careGroupId: req.params.groupId }).populate('userId');
-  res.status(200).json(members);
-};
 
-// GET /caregroups/user
-exports.getCareGroupsByUser = async (req, res) => {
+// DELETE /api/caregroups/:groupId
+const deleteCareGroup = async (req, res) => {
   try {
-    const userId = req.user._id; // if using auth middleware
-    // OR: const userId = req.params.userId;
+    const { groupId } = req.params;
 
-    const memberships = await CareGroupMember.find({ userId }).populate('careGroupId');
+    const group = await CareGroup.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ success: false, message: 'Care group not found' });
+    }
 
-    // Extract the actual care group details
-    const careGroups = memberships.map(member => member.careGroupId);
+    if (group.adminUser.toString() !== req.user._id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized to delete this group' });
+    }
 
-    res.status(200).json({ careGroups });
+    // Delete the group
+    await CareGroup.findByIdAndDelete(groupId);
+
+    // Optional: delete related members
+    await CareGroupMember.deleteMany({ careGroupId: groupId });
+
+    res.json({ success: true, message: 'Care group and members deleted' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch care groups', details: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-=======
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
-// GET /api/caregroups/:groupId/members
-const getMembers = async (req, res) => {
-  try {
-    const members = await CareGroupMember.find({ careGroupId: req.params.groupId }).populate('userId');
-    res.status(200).json(members);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 // GET /api/caregroups/my-caregroups
 const getCareGroupsByUser = async (req, res) => {
@@ -115,8 +100,7 @@ const getCareGroupsByUser = async (req, res) => {
 // ✅ Export all as default object
 export default {
   createCareGroup,
-  addMember,
-  getMembers,
+  editCareGroup,
+  deleteCareGroup,
   getCareGroupsByUser
 };
->>>>>>> f313dcd (Initial commit from VS Code terminal)

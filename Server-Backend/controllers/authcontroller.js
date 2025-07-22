@@ -29,9 +29,9 @@ export const register = async (req, res) => {
         await user.save();
 
         const token = jwt.sign(
-            { id: user._id, },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
+            { _id: user._id }, 
+             process.env.JWT_SECRET,
+             { expiresIn: '7d' }
         );
 
         res.cookie('token', token, {
@@ -42,24 +42,18 @@ export const register = async (req, res) => {
         });
 
         // sending welcome email
-<<<<<<< HEAD
-        const mailOptions = {
-=======
         const mailOption = {
->>>>>>> f313dcd (Initial commit from VS Code terminal)
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to Carely Login',
             text: `Hello ${firstName},\n\nThank you for registering with Carely. We are excited to have you on board!\n\nBest regards,\nCarely Login Team`
         }; 
 
-<<<<<<< HEAD
-        await transporter.sendMail(mailOptions);
-=======
         await transporter.sendMail(mailOption);
->>>>>>> f313dcd (Initial commit from VS Code terminal)
          
-        return res.json({ success: true});
+        return res.json({ success: true,
+            "token": token,
+        });
         
     } catch (error) {
             res.json({ success: false, message: error.message });
@@ -83,17 +77,19 @@ export const register = async (req, res) => {
             return res.json({ success: false, message: 'Invalid password' });
         }
         const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );  
+             { _id: user._id, email: user.email }, 
+             process.env.JWT_SECRET,
+             { expiresIn: '7d' }
+        );
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
-        return res.json({ success: true});
+        return res.json({ success: true
+            , "token": token
+        });
     }
     catch (error) {
         res.json({ success: false, message: 'Error logging in', error: error.message });
@@ -123,20 +119,6 @@ export const sendVerifyOtp = async (req, res) => {
         if (user.isAccountVerified) {
             return res.json({ success: false, message: 'Account already verified' });
         }
-<<<<<<< HEAD
-            const otp = String(Math.floor (100000 + Math.random() * 900000)); // generate a 6-digit verification code
-            user.verifyOtp = otp;
-            user.verifyOtpExpiredAt = Date.now() + 24 * 60 * 60 * 1000 ; // code valid for 1 day
-            await user.save();
-
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: user.email,
-            subject: 'Account Verification Code',
-            text: `Your Code is ${verifyCode}. Verify your account within 24 hours.`
-        }
-        await transporter.sendMail(mailOptions);
-=======
             const otp = String(Math.floor(100000 + Math.random() * 900000)); // generate a 6-digit verification code
             user.verifyOtp   =  otp;
             user.verifyOtpExpiredAt = Date.now() + 24 * 60 * 60 * 1000 ; // code valid for 1 day
@@ -149,7 +131,6 @@ export const sendVerifyOtp = async (req, res) => {
             text: `Your Otp is ${otp}. Verify your account within 24 hours.`
         }
         await transporter.sendMail(mailOption);
->>>>>>> f313dcd (Initial commit from VS Code terminal)
         res.json({ success: true, message: 'Verification code sent to your email' });
 
         }
@@ -188,9 +169,6 @@ export const sendVerifyOtp = async (req, res) => {
         catch (error) {
             return res.json({ success: false, message: error.message });
         }
-<<<<<<< HEAD
-    }
-=======
     }
 
     // Check if the user is verified
@@ -266,4 +244,3 @@ export const resetPassword = async (req, res) => {
         return res.json({ success: false, message: error.message });
     }
 }
->>>>>>> f313dcd (Initial commit from VS Code terminal)
