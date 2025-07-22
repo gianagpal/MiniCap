@@ -42,14 +42,22 @@ export const register = async (req, res) => {
         });
 
         // sending welcome email
+<<<<<<< HEAD
         const mailOptions = {
+=======
+        const mailOption = {
+>>>>>>> f313dcd (Initial commit from VS Code terminal)
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to Carely Login',
             text: `Hello ${firstName},\n\nThank you for registering with Carely. We are excited to have you on board!\n\nBest regards,\nCarely Login Team`
         }; 
 
+<<<<<<< HEAD
         await transporter.sendMail(mailOptions);
+=======
+        await transporter.sendMail(mailOption);
+>>>>>>> f313dcd (Initial commit from VS Code terminal)
          
         return res.json({ success: true});
         
@@ -115,6 +123,7 @@ export const sendVerifyOtp = async (req, res) => {
         if (user.isAccountVerified) {
             return res.json({ success: false, message: 'Account already verified' });
         }
+<<<<<<< HEAD
             const otp = String(Math.floor (100000 + Math.random() * 900000)); // generate a 6-digit verification code
             user.verifyOtp = otp;
             user.verifyOtpExpiredAt = Date.now() + 24 * 60 * 60 * 1000 ; // code valid for 1 day
@@ -127,6 +136,20 @@ export const sendVerifyOtp = async (req, res) => {
             text: `Your Code is ${verifyCode}. Verify your account within 24 hours.`
         }
         await transporter.sendMail(mailOptions);
+=======
+            const otp = String(Math.floor(100000 + Math.random() * 900000)); // generate a 6-digit verification code
+            user.verifyOtp   =  otp;
+            user.verifyOtpExpiredAt = Date.now() + 24 * 60 * 60 * 1000 ; // code valid for 1 day
+            await user.save();
+
+        const mailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: 'Account Verification Otp',
+            text: `Your Otp is ${otp}. Verify your account within 24 hours.`
+        }
+        await transporter.sendMail(mailOption);
+>>>>>>> f313dcd (Initial commit from VS Code terminal)
         res.json({ success: true, message: 'Verification code sent to your email' });
 
         }
@@ -165,4 +188,82 @@ export const sendVerifyOtp = async (req, res) => {
         catch (error) {
             return res.json({ success: false, message: error.message });
         }
+<<<<<<< HEAD
     }
+=======
+    }
+
+    // Check if the user is verified
+
+    export const isAuthenticated = async (req, res) => {
+        try {
+            return res.json({ success: true});
+        } catch (error) {
+                return res.json({ success: false, message: error.message });
+            }
+        }
+
+        // Send Password Reset Email
+
+        export const sendResetOtp = async (req, res) => {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.json({ success: false, message: 'Email is required' });
+            }
+
+            try {
+                const user = await userModel.findOne({ email});
+                if (!user) {
+                    return res.json({ success: false, message: 'User not found' });
+                }  
+                const otp = String(Math.floor(100000 + Math.random() * 900000)); 
+                user.resetOtp = otp;
+                user.resetOtpExpiredAt = Date.now() + 15 * 60 * 1000; 
+                await user.save();
+
+                const mailOption = {
+                    from: process.env.SENDER_EMAIL,
+                    to: user.email,
+                    subject: 'Password Reset Otp',
+                    text: `Your Otp for reseting your password is ${otp}. Use this Otp to proceed with reseting your password.`
+                }; 
+                await transporter.sendMail(mailOption);
+                return res.json({ success: true, message: 'Password reset Otp sent to your email' });
+            }
+            catch (error) {
+                return res.json({ success: false, message: error.message });
+            }
+        }
+
+// Reset User password
+export const resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    if ( !email || !otp || !newPassword) {
+        return res.json({ success: false, message: 'Email, Otp and new password are required' });
+    } 
+    try {
+        const user = await userModel.findOne({email});
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+        if (user.resetOtp === '' || user.resetOtp !== otp) {
+            return res.json({ success: false, message: 'Invalid Otp' });
+        }
+        if(user.resetOtpExpiredAt < Date.now()) {
+            return res.json({ success: false, message: 'Otp expired' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetOtp = '';
+        user.resetOtpExpiredAt = 0;
+        await user.save();
+        return res.json({ success: true, message: 'Password reset successfully' });
+    }
+    catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
+}
+>>>>>>> f313dcd (Initial commit from VS Code terminal)

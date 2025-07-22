@@ -4,7 +4,11 @@ const transporter = nodemailer.createTransport({
     port: 587,
     auth: {
         user: process.env.SMTP_USER,
+<<<<<<< HEAD
         pass: process.env.SMTP_PASS
+=======
+        pass: process.env.SMTP_PASS,
+>>>>>>> f313dcd (Initial commit from VS Code terminal)
     } 
 });
 
