@@ -30,22 +30,27 @@ function Register() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleRegister = (e) => {
-    e.preventDefault();
+ const handleRegister = (e) => {
+  e.preventDefault();
 
-    const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-    const emailExists = existingUsers.some(user => user.email === formData.email);
-    if (emailExists) {
-      alert('Email already registered!');
-      return;
-    }
+  const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+  const emailExists = existingUsers.some(user => user.email === formData.email);
 
-    const updatedUsers = [...existingUsers, formData];
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  if (emailExists) {
+    alert('User already exists. Redirecting to login...');
+    setTimeout(() => {
+      navigate('/login');
+    }, 1500);
+    return;
+  }
 
-    console.log('Registered:', formData);
-    setShowSuccess(true);
-  };
+  const updatedUsers = [...existingUsers, formData];
+  localStorage.setItem('users', JSON.stringify(updatedUsers));
+
+  console.log('Registered:', formData);
+  setShowSuccess(true);
+};
+
 
   return (
     <div className="form-container">

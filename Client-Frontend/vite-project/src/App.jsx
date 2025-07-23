@@ -6,6 +6,7 @@ import Register from './pages/register';
 import VerifyEmail from './pages/verifyemail';
 import CareGroup from './pages/careGroup';
 import GroupDashboard from './pages/groupDashboard';
+import UserDashboard from './pages/UserDashboard'; // ✅ Add this import
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/caregroup" element={<CareGroup />} />
         <Route path="/group-dashboard" element={<GroupDashboard />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} /> {/* ✅ Add this route */}
       </Routes>
     </Router>
   );

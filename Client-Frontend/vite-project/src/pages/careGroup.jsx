@@ -1,60 +1,50 @@
-// careGroup.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../App.css';
 
-function CareGroup() {
+const CareGroup = () => {
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
-  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateGroup = (e) => {
-    e.preventDefault();
+  const handleCreateGroup = () => {
+    if (!groupName.trim()) {
+      alert('Group name is required');
+      return;
+    }
 
-    // Simulate group creation
-    console.log('Care Group Created:', groupName, description);
+    const newGroup = {
+      id: Date.now(),
+      name: groupName,
+      description: description
+    };
 
-    // Store admin role in localStorage
-    localStorage.setItem('admin', 'true');
-    localStorage.setItem('careGroupName', groupName);
+    const storedGroups = JSON.parse(localStorage.getItem('careGroups')) || [];
+    storedGroups.push(newGroup);
+    localStorage.setItem('careGroups', JSON.stringify(storedGroups));
 
-    // Show confirmation modal
-    setShowSuccess(true);
+    navigate('/user-dashboard');
   };
 
   return (
-    <div className="form-container">
+    <div className="page-container">
       <h2>Create Care Group</h2>
-      <form onSubmit={handleCreateGroup}>
-        <input
-          type="text"
-          placeholder="Care Group Name"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Description (optional)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button type="submit">Create Group</button>
-      </form>
-
-      {showSuccess && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setShowSuccess(false)}>&times;</span>
-            <p>Care Group "{groupName}" created successfully!</p>
-            <p>You are the Admin of this group.</p>
-            <button onClick={() => navigate('/group-dashboard')}>Continue</button>
-          </div>
-        </div>
-      )}
+      <input
+        type="text"
+        placeholder="Care Group Name"
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Description (optional)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button className="btn btn-primary" onClick={handleCreateGroup}>
+        Create Group
+      </button>
     </div>
   );
-}
+};
 
 export default CareGroup;

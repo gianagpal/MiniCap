@@ -75,3 +75,84 @@ button {
   text-decoration: underline;
   cursor: pointer;
 }
+
+
+.page-container {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  min-height: 100vh;
+}
+
+.page-container h2 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+}
+
+
+.caregroup-card {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+
+input[type="text"],
+input[type="email"],
+select {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+
+.caregroup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.button-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+.text-center {
+  text-align: center;
+}

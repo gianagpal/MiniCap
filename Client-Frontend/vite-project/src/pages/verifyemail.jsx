@@ -33,7 +33,7 @@ function VerifyEmail() {
           <div className="modal-content">
             <span className="close" onClick={() => setSent(false)}>&times;</span>
             <p>Verification link sent to {email}!</p>
-            <button onClick={() => navigate('/caregroup')}>Continue to Care Group Creation</button>
+            <button onClick={() => navigate('/user-dashboard')}>Continue to Dashboard</button>
           </div>
         </div>
       )}
